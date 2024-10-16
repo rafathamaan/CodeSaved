@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeSaved</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode"> <!-- Default to dark mode -->
+  <div class="container">
+    <h1 class="text-center">Computer Networks Lab</h1>
+    
+    <!-- Mode Switch Button -->
+    <div class="mode-switch">
+      <button id="modeToggle" class="btn">Switch to Light Mode</button>
+    </div>
+    <!-- Tab navigation for Subjects -->
+    <div class="tabs">
+      <button class="tablinks" onclick="openTab(event, 'subject1')">Weekly</button>
+      <button class="tablinks" onclick="openTab(event, 'subject2')">Lab Internal 1</button>
+    </div>
+
+    <!-- Weekly Content -->
+    <div id="subject1" class="tabcontent">
+      <h2>Weekly</h2>
+
+      <!-- Week 1 to Week 5 -->
+      <div class="week-section">
+        <button class="collapsible">Week 1</button>
+        <div class="content">
+          <pre><code id="code1">console.log("Hello, World!");</code></pre>
+          <button class="btn" onclick="copyCode('code1', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+      
+      <div class="week-section">
+        <button class="collapsible">Week 2</button>
+        <div class="content">
+          <pre><code id="code2">let x = 10;</code></pre>
+          <button class="btn" onclick="copyCode('code2', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+
+      <!-- Add more weeks till Week 5 -->
+      <div class="week-section">
+        <button class="collapsible">Week 3</button>
+        <div class="content">
+          <pre><code id="code3">const arr = [1, 2, 3];</code></pre>
+          <button class="btn" onclick="copyCode('code3', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+
+      <div class="week-section">
+        <button class="collapsible">Week 4</button>
+        <div class="content">
+          <pre><code id="code4">if (true) { console.log("True"); }</code></pre>
+          <button class="btn" onclick="copyCode('code4', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+
+      <div class="week-section">
+        <button class="collapsible">Week 5</button>
+        <div class="content">
+          <pre><code id="code5">function greet() { return "Hello"; }</code></pre>
+          <button class="btn" onclick="copyCode('code5', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lab Internal 1 Content -->
+    <div id="subject2" class="tabcontent">
+      <h2>Lab Internal 1</h2>
+
+      <!-- Set 1 to Set 5 -->
+      <div class="week-section">
+        <button class="collapsible">Set 1</button>
+        <div class="content">
+          <pre><code id="set1-q1">Question 1 - Set 1</code></pre>
+          <button class="btn" onclick="copyCode('set1-q1', this)">Copy</button>
+          <span class="copy-message"></span>
+          
+          <pre><code id="set1-q2">Question 2 - Set 1</code></pre>
+          <button class="btn" onclick="copyCode('set1-q2', this)">Copy</button>
+          <span class="copy-message"></span>
+          
+          <pre><code id="set1-q3">Question 3 - Set 1</code></pre>
+          <button class="btn" onclick="copyCode('set1-q3', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+
+      <!-- Set 2 -->
+      <div class="week-section">
+        <button class="collapsible">Set 2</button>
+        <div class="content">
+          <pre><code id="set2-q1">Question 1 - Set 2</code></pre>
+          <button class="btn" onclick="copyCode('set2-q1', this)">Copy</button>
+          <span class="copy-message"></span>
+
+          <pre><code id="set2-q2">Question 2 - Set 2</code></pre>
+          <button class="btn" onclick="copyCode('set2-q2', this)">Copy</button>
+          <span class="copy-message"></span>
+
+          <pre><code id="set2-q3">Question 3 - Set 2</code></pre>
+          <button class="btn" onclick="copyCode('set2-q3', this)">Copy</button>
+          <span class="copy-message"></span>
+        </div>
+      </div>
+
+      <!-- Similarly add Set 3, Set 4, and Set 5 with 3 questions each -->
+    </div>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
