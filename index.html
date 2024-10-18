@@ -359,70 +359,101 @@ public class EchoClient {
         <button class="collapsible">Chat Client and Server</button>
         <div class="content">
           <pre><code id="code5"><br>
-            import java.util.*;
-            import java.io.*;
-            import java.net.*;
-            
-            class ChatClient { 
-                    public static void main(String[] args) throws Exception { 
-                                Socket stk=new Socket("localhost",2000);
-                                BufferedReader bs=new BufferedReader(new InputStreamReader(stk.getInputStream()));
-                                PrintStream ps=new PrintStream(stk.getOutputStream());
-                                Scanner sc=new Scanner(System.in);
-                               String msg;
-                               
-                               do{ 
-                                   System.out.print("Enter a msg :"); 
-                                   msg=sc.nextLine();
-                                   ps.println(msg);
-                                   System.out.println("message has sent to Server");
-                                   msg=bs.readLine();
-                                   System.out.println("Msg has received from Server :" + msg);
-                              } while(!msg.equals("end");
-                    }
-            }  <br><br><br><br><br>
-            import java.io.*;
-            import java.net.*;
-            
-            class ChatServer { 
-                       public static void main(String[] args) throws Exception {
-                           System.out.println("Server has Started....");
-                           System.out.println("Server Has not connected....");
-                            int count=0;
-                            ServerSocket ss=new ServerSocket(2000);
-            
-                         while(true) { 
-             
-                           Socket stk=ss.accept();
-                           System.out.println("Client has connected " + (++count));
-                           new Thread(new TCP(stk)).start(); 
-                           } 
-                }
-            } 
-            
-            class TCP extends Thread { 
-                      Socket stk;
-                      TCP(Socket s){
-                            stk=s;
-                         } 
-                     public void run () { 
-                                 try  { 
-                                   BufferedReader bs=new BufferedReader(new InputStreamReader(stk.getInputStream()));
-                                   PrintStream ps=new PrintStream(stk.getOutputStream());
-                                   String msg;
-                                  
-                                   do { 
-                                       msg=bs.readLine();
-                                       System.out.println("Message from client :" + msg);
-                                       ps.println(msg);
-                                       System.out.println("Message has been sent to client sucessfully...");
-                                     }while(!msg.equals("end"));
-                                   }
-                                catch(Exception e) { 
-                                      System.out.println(e);
-                                     }
-                                 } 
-                 }
+           import java.io.*;
+import java.net.*;
+public class Chatclient{
+private static final String SERVER_IP="127.0.0.1";
+private static final int SERVER_PORT=9000;
+public static void main(String args[]) throws Exception
+{
+Socket socket=new Socket(SERVER_IP, SERVER_PORT);
+System.out.println("Connected to the chat server..");
+BufferedReader reader=new BufferedReader(new InputStreamReader (socket.getInputStream()));
+PrintWriter writer =new PrintWriter(socket.getOutputStream(), true);
+Thread input=new Thread(()->{
+BufferedReader userInput=new BufferedReader(new InputStreamReader(System.in));
+try{
+while(true) {
+String line=userInput.readLine();
+writer.println(line);}
+}
+catch(IOException e) {
+System.out.println(e);}
+});
+input.start();
+String serverMessage;
+try{
+while((serverMessage=reader.readLine())!=null)
+{
+System.out.println("Server: "+serverMessage);
+}
+}catch(IOException e){
+e.printStackTrace();
+}
+finally{
+socket.close();
+}}}  <br><br><br><br><br>
+           import java.io.*;
+import java.net.*;
+import java.util.*;
+public class Chatserver{
+private static final int PORT=9000;
+private static Set<PrintWriter> writers=new HashSet<>();
+public static void main(String args[]) throws Exception{
+System.out.println("The chat server is running....");
+ServerSocket listener=new ServerSocket (PORT);
+try{
+while(true) {
+new Handler(listener.accept()).start();
+}}
+finally{
+listener.close();
+}}
+private static class Handler extends Thread
+{
+private Socket socket;
+private PrintWriter out;
+private BufferedReader in;
+public Handler (Socket socket) {
+this.socket=socket;
+}
+public void run(){
+try{
+in=new BufferedReader(new InputStreamReader(System.in));
+out=new PrintWriter (socket.getOutputStream(), true);
+synchronized (writers)
+{
+writers.add(out);
+}
+while(true) {
+String message=in.readLine();
+if(message==null){
+return;
+}
+System.out.println("Recieved message: "+message);
+synchronized(writers) {
+for(PrintWriter writer: writers)
+{
+writer.println(message);
+}}}}
+catch(IOException e)
+{
+System.out.println(e);
+}
+finally
+{
+if(out!=null)
+{
+writers.remove(out);
+}
+try
+{
+socket.close();
+}
+catch(IOException e)
+{
+System.out.println(e);
+}}}}} 
                            </code></pre>
           <button class="btn" onclick="copyCode('code5', this)">Copy</button>
           <span class="copy-message"></span>
