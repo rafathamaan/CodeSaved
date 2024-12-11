@@ -18,7 +18,9 @@
     </div>
     <!-- Tab navigation for Subjects -->
     <div class="tabs">
-      <button class="tablinks" onclick="openTab(event, 'subject1')">Programs</button>
+      <button class="tablinks" onclick="openTab(event, 'subject1')">Lab 1</button>
+      <button class="tablinks" onclick="openTab(event, 'subject3')">Lab 2</button>
+      
       <!-- <button class="tablinks" onclick="openTab(event, 'subject2')">Lab Internal 1</button> -->
     </div>
 
@@ -461,9 +463,13 @@ System.out.println(e);
       </div>
     </div>
 
+
+
+
+
     <!-- Lab Internal 1 Content -->
     <div id="subject2" class="tabcontent">
-      <h2>Lab Internal 1</h2>
+      <h2>Lab Internal 2</h2>
 
       <!-- Set 1 to Set 5 -->
       <div class="week-section">
@@ -505,6 +511,322 @@ System.out.println(e);
     </div>
   </div>
 
+
+
+  <div id="subject3" class="tabcontent">
+    <h2>Programs</h2>
+
+    <!-- Week 1 to Week 5 -->
+    <div class="week-section">
+      <button class="collapsible">week 7,9 TCP</button>
+      <div class="content">
+        <pre><code id="code100">
+          //server
+          import java.util.*;
+          import java.io.*;
+          import java.net.*;
+          public class server{
+              public static void main(String []args) throws Exception
+              {
+                  System.out.println("Server has started...!!!");
+                  ServerSocket ss =new ServerSocket(9999);
+                  Socket stk=ss.accept();
+                  System.out.println("server is connected...!!");
+                  BufferedReader bf=new BufferedReader(new InputStreamReader(stk.getInputStream()));
+                  PrintStream ps=new PrintStream(stk.getOutputStream());
+                  String msg;
+                  do{
+                      msg=bf.readLine();
+                      System.out.println("message received from client:"+ msg);
+                      ps.println("message received succesfully!!");
+                  }while(!msg.equals("end"));
+              }
+          } 
+        
+        <br/>
+        import java.io.*;
+        import java.util.*;
+        import java.net.*;
+        public class client{
+        public static void main(String []args) throws Exception
+        {   
+        Scanner sc=new Scanner(System.in);
+        Socket stk=new Socket("localhost",9999);
+        BufferedReader br=new BufferedReader(new InputStreamReader(stk.getInputStream()));
+        PrintStream ps=new PrintStream(stk.getOutputStream());
+        String msg;
+        do{
+            System.out.println("enter a message");
+             msg=sc.next();
+            ps.println(msg);
+            System.out.println("message sent to server"+ msg);
+            String response=br.readLine();
+            System.out.println("Server response:"+ response);
+        }while(!msg.equals("end"));
+     }
+}</code></pre>
+        <button class="btn" onclick="copyCode('code100', this)">Copy</button>
+        <span class="copy-message"></span>
+      </div>
+    </div>
+    
+    <div class="week-section">
+      <button class="collapsible">Week 8 rmi</button>
+      <div class="content">
+        <pre><code id="code101">
+//Helloserver
+  
+
+import java.rmi.*;
+import java.rmi.registry.*;
+public class HelloServer
+{
+  public static void main(String []args) 
+  {  
+     try{
+       LocateRegistry.createRegistry(4444);
+       Helloimpl obj=new Helloimpl();
+       Naming.rebind("rmi://localhost:4444/Helloworld",obj);
+      System.out.println("Server is ready");
+      }
+     catch(Exception e){
+           System.out.println(e);
+         }
+}}
+
+
+
+//client
+
+import java.net.*;
+import java.io.*;
+import java.rmi.*;
+public class HelloClient{
+  public static void main(String []args)
+{
+  try
+  {
+    Helloworld remobj=(Helloworld)Naming.lookup("rmi://localhost:4444/Helloworld");
+     System.out.println(remobj.display());
+   }
+  catch(Exception e){
+     System.out.println(e);
+    }
+}}
+   
+//implements remote interface
+
+import java.rmi.*;
+import java.rmi.server.UnicastRemoteObject;
+public class Helloimpl extends UnicastRemoteObject implements Helloworld
+{
+       public Helloimpl() throws RemoteException{}
+       public String display() throws RemoteException
+       {
+         return "Hello World from server";
+       }
+}
+//define remote interface
+
+import java.rmi.*;
+public interface Helloworld extends Remote
+{
+  String display() throws RemoteException;
+}
+
+        </code></pre>
+        <button class="btn" onclick="copyCode('code101', this)">Copy</button>
+        <span class="copy-message"></span>
+      </div>
+    </div>
+    <div class="week-section">
+      <button class="collapsible">week 10 cookies</button>
+      <div class="content">
+        <pre><code id="code102">
+          import java.util.*;
+          import java.io.*;
+          public class cookiees{
+              public static void main(String []args)
+              {
+                  Map<String,String> cookie=new HashMap<>();
+                  cookie.put("1","Amaan");
+                  cookie.put("2","Amaan2");
+                  cookie.put("3","Amaan3");
+                  for(Map.Entry<String , String> uoo: cookie.entrySet())
+                  {
+                      System.out.println("cookie key : "+ uoo.getKey());
+                      System.out.println("cookie value: "+ uoo.getValue());
+                  }
+              }
+          }
+        </code></pre>
+        <button class="btn" onclick="copyCode('code102', this)">Copy</button>
+        <span class="copy-message"></span>
+      </div>
+    </div>
+
+    <!-- Add more weeks till Week 5 -->
+    <div class="week-section">
+      <button class="collapsible">week 11 java mail</button>
+      <div class="content">
+        <pre><code id="code103">
+          <br>
+          import java.util.*; import javax.mail.*;
+          import javax.mail.internet.*; import javax.activation.*;
+          
+          public class SendMail
+          {
+          public static void main(String [] args){
+          String to = "chinnasamyponnusamy@gmail.com";//change accordingly String from  =  "chinna@mlrinstitutions.ac.in";//change  accordingly String host = "localhost";//or IP address
+          
+          //Get the session object
+          Properties properties = System.getProperties(); properties.setProperty("mail.smtp.host", host);
+          Session session = Session.getDefaultInstance(properties);
+          
+          
+          //compose the message try{
+          MimeMessage message  =  new  MimeMessage(session); message.setFrom(new InternetAddress(from)); message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
+          message.setSubject("Ping");
+          message.setText("Hello, this is example of sending email ");
+          
+          
+          // Send message Transport.send(message);
+          System.out.println("message sent successfully.	");
+          
+          
+          }catch (MessagingException mex) {mex.printStackTrace();}
+          }
+          }
+            
+        </code></pre>
+        <button class="btn" onclick="copyCode('code103', this)">Copy</button>
+        <span class="copy-message"></span>
+      </div>
+    </div>
+
+    <div class="week-section">
+      <button class="collapsible">week 12 distace vector routing</button>
+      <div class="content">
+        <pre><code id="code104"><br>
+          //DistanceVectorRouting import java.util.Arrays;
+
+          public  class  DistanceVectorRouting  {
+          static final int INFINITY = Integer.MAX_VALUE;
+          static final int NUM_NODES = 4; // Number of nodes in the network
+          
+          
+          public static void main(String[] args) { int[][] distanceMatrix = {
+          {0, 1, 3, INFINITY},	// Distance from Node 0 to other nodes
+          {1, 0, INFINITY, 2},	// Distance from Node 1 to other nodes
+          {3, INFINITY, 0, 2},	// Distance from Node 2 to other nodes
+          {INFINITY, 2, 2, 0}	// Distance from Node 3 to other nodes
+          };
+          
+          
+          // Initialize distance vector table
+          int[][] distanceVectorTable = new int[NUM_NODES][NUM_NODES]; for (int i = 0; i < NUM_NODES; i++) {
+          distanceVectorTable[i] = Arrays.copyOf(distanceMatrix[i], NUM_NODES);
+          }
+          
+          
+          System.out.println("Initial Distance Vector Table:");
+          printDistanceVectorTable(distanceVectorTable);
+
+
+          // Simulate iterations of the Distance Vector Routing algorithm for (int i = 0; i < NUM_NODES; i++) {
+          System.out.println("Iteration " + (i + 1) + ":"); for (int j = 0; j < NUM_NODES; j++) {
+          if (j != i) {
+          for (int k = 0; k < NUM_NODES; k++) {
+          if (k != i && distanceVectorTable[j][k] > distanceMatrix[j][i] + distanceVectorTable[i][k]) {
+          distanceVectorTable[j][k] = distanceMatrix[j][i] + distanceVectorTable[i][k];
+          }
+          }
+          }
+          }
+          printDistanceVectorTable(distanceVectorTable);
+          }
+          }
+          
+          
+          static   void   printDistanceVectorTable(int[][]   distanceVectorTable)    { for (int i = 0; i < NUM_NODES; i++) {
+          for (int j = 0; j < NUM_NODES; j++) {
+          System.out.print((distanceVectorTable[i][j] == INFINITY ? "INF" : distanceVectorTable[i][j]) + "\t");
+          }
+          System.out.println();
+          }
+          System.out.println();
+          }
+          }
+          To Run
+          Javac DistanceVectorRouting.java
+          Java DistanceVectorRouting
+          
+          
+          //LinkStateRouting import java.util.*;
+          
+          public  class  LinkStateRouting  {
+          static final int NUM_NODES = 5; // Number of nodes in the network
+          
+          
+          public static void main(String[] args) { int[][] adjacencyMatrix = {
+          {0, 2, 0, 1, 0}, // Adjacency matrix representing links between nodes
+          {2, 0, 3, 2, 0},
+          {0, 3, 0, 0, 1},
+          {1, 2, 0, 0, 4},
+          {0, 0, 1, 4, 0}
+          };
+          
+          
+          // Initialize link state database
+          int[][] linkStateDatabase = new int[NUM_NODES][NUM_NODES]; for (int i = 0; i < NUM_NODES; i++) {
+          for (int j = 0; j < NUM_NODES; j++) { if (i == j) {
+          linkStateDatabase[i][j] = 0;
+          } else if (adjacencyMatrix[i][j] != 0) { linkStateDatabase[i][j] = adjacencyMatrix[i][j];
+          } else {
+          linkStateDatabase[i][j]  =  Integer.MAX_VALUE;
+          }
+          }
+          }
+          
+          
+          System.out.println("Initial Link State Database:"); printLinkStateDatabase(linkStateDatabase);
+          
+          // Simulate iterations of the Link State Routing algorithm for (int i = 0; i < NUM_NODES; i++) {
+          System.out.println("Iteration " + (i + 1) + ":");
+          for (int j = 0; j < NUM_NODES; j++) { if (j != i) {
+          for (int k = 0; k < NUM_NODES; k++) {
+          if (k != i && linkStateDatabase[j][i] != Integer.MAX_VALUE && linkStateDatabase[i][k] != Integer.MAX_VALUE &&
+          linkStateDatabase[j][k] > linkStateDatabase[j][i] + linkStateDatabase[i][k]) {
+          linkStateDatabase[j][k] = linkStateDatabase[j][i] + linkStateDatabase[i][k];
+          }
+          }
+          }
+          }
+          printLinkStateDatabase(linkStateDatabase);
+          }
+          }
+          
+          
+          static   void   printLinkStateDatabase(int[][]   linkStateDatabase)    { for (int i = 0; i < NUM_NODES; i++) {
+          for (int j = 0; j < NUM_NODES; j++) {
+          System.out.print((linkStateDatabase[i][j] == Integer.MAX_VALUE ? "INF" : linkStateDatabase[i][j]) + "\t");
+          }
+          System.out.println();
+          }
+          System.out.println();
+          }
+          }
+          //To Run
+          //Javac LinkStateRouting.java
+          //Java LinkStateRouting
+                     
+        </code></pre>
+        <button class="btn" onclick="copyCode('code104', this)">Copy</button>
+        <span class="copy-message"></span>
+      </div>
+    </div>
+
+    
   <script src="scripts.js"></script>
 </body>
 </html>
