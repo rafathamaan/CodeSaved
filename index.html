@@ -19,6 +19,7 @@
     <!-- Tab navigation for Subjects -->
     <div class="tabs">
       <button class="tablinks" onclick="openTab(event, 'subject1')">Lab 1</button>
+      <button class="tablinks" onclick="openTab(event, 'subject2')">All</button>
       <button class="tablinks" onclick="openTab(event, 'subject3')">Lab 2</button>
       <button class="tablinks" onclick="openTab(event, 'subject4')">CND</button>
 
@@ -474,41 +475,312 @@ System.out.println(e);
 
       <!-- Set 1 to Set 5 -->
       <div class="week-section">
-        <button class="collapsible">Set 1</button>
+        <button class="collapsible">All</button>
         <div class="content">
-          <pre><code id="set1-q1">Question 1 - Set 1</code></pre>
+          <pre><code id="set1-q1">CN
+
+            WEEK 2,7,9
+            
+            import java.io.*;
+            import java.util.*;
+            import java.net.Socket;
+             class Client {
+                public static void main(String[] args) throws IOException{
+                    Socket s=new Socket("localhost",9999);
+                    System.out.println("Connection established");
+                    Scanner sc=new Scanner(System.in);
+                    BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    PrintStream ps=new PrintStream(s.getOutputStream());
+                    String msg;
+                    do{
+                        System.out.println("Enter Message");
+                        msg=sc.nextLine();
+                        ps.println(msg);
+                        System.out.println("Server: "+br.readLine());
+                    }while(!msg.equals("exit"));
+            }
+            }
+            
+            
+            
+            import java.io.*;
+            import java.net.*;
+            import java.net.Socket;
+            
+            class Server{
+                public static void main(String[] args)throws IOException{ {
+                    ServerSocket ss=new ServerSocket(9999);
+                    System.out.println("Server is running on port 9999");
+                    Socket s=ss.accept();
+                    System.out.println("Connection established");
+                    BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    PrintStream ps=new PrintStream(s.getOutputStream());
+                    String msg;
+                    do{
+                        msg=br.readLine();
+                        System.out.println("Client: "+msg);
+                        ps.println("Message received Successfully");
+                    }while(!msg.equals("exit"));
+                    ss.close();
+                    s.close();
+                    }
+                }
+            }
+            
+            
+             WEEK 3
+            
+            import java.net.*;
+            import java.io.*;
+            public class ftpserver {
+                public static void main(String[] args)throws Exception{
+                    ServerSocket s = new ServerSocket(2999);
+                    System.out.println("Server is running on port 2999");
+                    Socket ss= new Socket();
+                    ss=s.accept();       
+                    System.out.println("Server is connected on port 2999");
+                    BufferedReader br=new BufferedReader(new FileReader("file.txt"));
+                    PrintStream ps= new PrintStream(ss.getOutputStream());
+                    String str;
+                    while((str=br.readLine())!=null){
+                        ps.println(str);
+                    }
+            }
+            }
+            
+            
+            
+            import java.io.*;
+            import java.net.*;
+            
+            
+            public class ftpclient {
+                public static void main(String[] args) throws Exception{
+                Socket s=new Socket("localhost",2999);
+                BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+                PrintWriter pw=new PrintWriter(new FileWriter("receivedfile.txt"));
+                String line;
+                while((line=br.readLine())!=null){
+                    pw.println(line);
+                }
+                }
+            }
+            
+            
+            WEEK 4
+            
+            import java.io.*;
+            import java.net.*;
+            public class remotecommandserver
+            {
+               public static void main(String []args) throws Exception
+                {
+                  ServerSocket ss=new ServerSocket(8899);
+                  Socket stk=ss.accept();
+                  BufferedReader br=new BufferedReader(new InputStreamReader(stk.getInputStream()));
+                  PrintStream ps=new PrintStream(stk.getOutputStream());
+                  String command=br.readLine();
+                  System.out.println("command is :" + command);
+                  ProcessBuilder pb=new ProcessBuilder(command);
+                  Process pro=pb.start();
+                  BufferedReader brp=new BufferedReader(new InputStreamReader(pro.getInputStream()));
+                  String line;
+                  while((line=brp.readLine())!=null)
+                  {
+                     ps.println(line);
+                  }
+                 System.out.println("command executed succesfully...");
+                 ps.println("null");
+               }}
+                  
+            
+            
+            
+            import java.io.*;
+            import java.util.*;
+            import java.net.*;
+            public class remotecommandclient
+            {
+               public static void main(String []args) throws Exception
+                {
+                  Scanner sc=new Scanner(System.in);
+                  Socket s=new Socket("localhost",8899);
+                  BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+                  PrintStream ps=new PrintStream(s.getOutputStream());
+                  System.out.println("enter the command to execute...");
+                 String command=sc.next();
+                  ps.println(command);
+                  String response=br.readLine();
+                do{ 
+                    System.out.println("executed and result is: "+response);
+                    response=br.readLine();
+                }
+                while(!response.equals("null"));
+                 } 
+               }
+            
+            
+            
+            WEEK 5
+            
+            import java.net.*;
+            public class datagramserver{
+                public static void main(String[] args) throws Exception{
+                  DatagramSocket s=new DatagramSocket(9999);
+                  byte[] bytes=new byte[1024];
+                  DatagramPacket ss=new DatagramPacket(bytes, bytes.length);
+                  s.receive(ss);
+                  String str=new String(ss.getData(),0,ss.getLength());
+                  System.out.println("From Client: "+str);
+                  ss=new DatagramPacket(str.getBytes(),str.length(),ss.getAddress(),ss.getPort());
+                  s.send(ss);
+                  s.close();
+                }
+            }
+            
+            
+            import java.net.*;
+            public class datagramclient {
+                public static void main(String[] args) throws Exception{
+                    DatagramSocket s=new DatagramSocket();
+                    String str="Hello Server,from Amaan";
+                    byte[] buffer=str.getBytes();
+                    DatagramPacket ss=new DatagramPacket(buffer, buffer.length, InetAddress.getByName("localhost"), 9999);
+                    s.send(ss);
+                    buffer=new byte[1024];
+                    ss= new DatagramPacket(buffer,buffer.length);
+                    s.receive(ss);
+                    System.out.println("From Server:"+new String(buffer,0,buffer.length));
+                    s.close();
+                    
+                }
+            }
+            
+            
+            WEEK 6
+            
+            import java.io.*;
+            import java.net.*;
+            
+            public class webpage {
+                public static void main(String[] args) throws Exception{
+                    URL u= new URL("https://www.google.com/");
+                    BufferedReader br=new BufferedReader(new InputStreamReader(u.openStream()));
+                    FileWriter fw=new FileWriter("webpage.html");
+                    String line;
+                    while((line=br.readLine())!=null){
+                        fw.write(line);
+                        fw.write("\n");
+                    }
+                    fw.close();
+                    br.close();
+                }
+            }
+            
+            
+            
+            WEEK 8
+            
+            import java.rmi.*;
+            import java.rmi.registry.LocateRegistry;
+            public class rmiserver {
+              public static void main(String[] args)throws Exception{ 
+                AddC obj = new AddC();
+                LocateRegistry.createRegistry(9090);
+                Naming.rebind("rmi://localhost:9090/ADD", obj);
+                System.out.println("Server started...");
+              }
+            }
+            
+            
+            
+            import java.rmi.*;
+            public class rmiclient
+            {
+              public static void main(String []args) throws Exception
+              {
+              AddI obj=(AddI)Naming.lookup("rmi://localhost:9090/ADD");
+              int n=obj.add(5,4);
+               System.out.println("Addition is:" + n);
+            }}
+            
+            
+            
+            import java.rmi.*;
+            public interface AddI extends Remote{
+                public int add(int a,int b) throws Exception;
+               }
+            
+            
+            import java.rmi.server.*;
+            public class AddC extends UnicastRemoteObject implements AddI
+            {
+              public AddC() throws Exception{};
+              public int add(int a,int b)
+               {
+                return a+b;
+               }}
+            
+            
+            WEEK 10
+            
+            import java.util.*;
+            public class cookies {
+                public static void main(String[] args) {
+                    Map <String,String> cookies=new HashMap<>();
+                    cookies.put("key1”,”AMAAN1”);
+                    cookies.put("key2”,”AMAAN2”);
+                    for(Map.Entry<String,String> e :cookies.entrySet()){
+                        System.out.println("Key: "+e.getKey()+" Value: "+e.getValue());
+                    }
+            
+                }
+            
+            }
+            
+            
+            WEEK 12
+            
+            import java.util.*;
+            
+            public class vector {
+                public static void main(String[] args) {
+                    int[][] dm = {{0, 1, 3, Integer.MAX_VALUE}, {1, 0, Integer.MAX_VALUE, 2}, {3, Integer.MAX_VALUE, 0, 2}, {Integer.MAX_VALUE, 2, 2, 0}};
+                    int n = 4;
+                    int[][] dvt = Arrays.copyOf(dm, n);
+                    
+                    for (int i = 0; i < n; i++) {
+                        for (int j = 0; j < n; j++) {
+                            if (j != i) {
+                                for (int k = 0; k < n; k++) {
+                                    if (k != i && dvt[j][k] > dm[j][i] + dvt[i][k]) {
+                                        dvt[j][k] = dm[j][i] + dvt[i][k];
+                                    }
+                                }
+                            }
+                        }
+                    }
+            
+                    for (int[] row : dvt) {
+                        for (int cell : row) {
+                            System.out.print((cell == Integer.MAX_VALUE) ? "INF " : cell + " ");
+                        }
+                        System.out.println();
+                    }
+                }
+            }
+            
+            
+            
+            </code></pre>
           <button class="btn" onclick="copyCode('set1-q1', this)">Copy</button>
           <span class="copy-message"></span>
           
-          <pre><code id="set1-q2">Question 2 - Set 1</code></pre>
-          <button class="btn" onclick="copyCode('set1-q2', this)">Copy</button>
-          <span class="copy-message"></span>
-          
-          <pre><code id="set1-q3">Question 3 - Set 1</code></pre>
-          <button class="btn" onclick="copyCode('set1-q3', this)">Copy</button>
-          <span class="copy-message"></span>
         </div>
       </div>
 
-      <!-- Set 2 -->
-      <div class="week-section">
-        <button class="collapsible">Set 2</button>
-        <div class="content">
-          <pre><code id="set2-q1">Question 1 - Set 2</code></pre>
-          <button class="btn" onclick="copyCode('set2-q1', this)">Copy</button>
-          <span class="copy-message"></span>
+      
 
-          <pre><code id="set2-q2">Question 2 - Set 2</code></pre>
-          <button class="btn" onclick="copyCode('set2-q2', this)">Copy</button>
-          <span class="copy-message"></span>
-
-          <pre><code id="set2-q3">Question 3 - Set 2</code></pre>
-          <button class="btn" onclick="copyCode('set2-q3', this)">Copy</button>
-          <span class="copy-message"></span>
-        </div>
-      </div>
-
-      <!-- Similarly add Set 3, Set 4, and Set 5 with 3 questions each -->
     </div>
   </div>
 
@@ -826,6 +1098,7 @@ public interface Helloworld extends Remote
         <span class="copy-message"></span>
       </div>
     </div>
+  
 
   </div>
 
