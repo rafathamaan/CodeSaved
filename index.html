@@ -34,86 +34,455 @@
       <div class="week-section">
         <button class="collapsible">Remote Commands Server & Client</button>
         <div class="content">
-          <pre><code id="code1">import java.io.*;
-            import java.net.*;
-            
-            public class RemoteCommandServer1 {
-                public static void main(String[] args) throws IOException {
-                    final int PORT = 12345;
-                    ServerSocket serverSocket = new ServerSocket(PORT);
-                    System.out.println("Server started. Listening on port " + PORT);
-                    System.out.println("Server is waiting for client");
-            
-                    while (true) {
-                        Socket clientSocket = serverSocket.accept();
-                        System.out.println("Client connected: " + clientSocket.getInetAddress().getHostName());
-                        new Thread(new CommandHandler(clientSocket)).start();
-                    }
-                }
-            
-                static class CommandHandler implements Runnable {
-                    private final Socket clientSocket;
-            
-                    CommandHandler(Socket socket) {
-                        this.clientSocket = socket;
-                    }
-            
-                    public void run() {
-                        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-                             
-                            String command = in.readLine();
-                            System.out.println("Received command: " + command);
-                            try {
-                                ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-                                processBuilder.redirectErrorStream(true); // Redirect error stream to output stream
-                                Process process = processBuilder.start();
-                                
-                                try (BufferedReader processOutput = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                                    String line;
-                                    while ((line = processOutput.readLine()) != null) {
-                                        out.println(line);
-                                    }
-                                }
-                            } catch (IOException e) {
-                                out.println("Error executing command: " + e.getMessage());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                clientSocket.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            } <br><br><br><br><br>
-            import java.io.*;
-            import java.net.*;
-            
-            public class RemoteCommandClient1 {
-                public static void main(String[] args) throws IOException {
-                    final String SERVER_IP = "localhost";
-                    final int PORT = 12345;
-                    
-                    try (Socket socket = new Socket(SERVER_IP, PORT);
-                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                         
-                        System.out.println("Connected to server.");
-                        out.println("hostname is pratyusha");
-                        
-                        String line;
-                        while ((line = in.readLine()) != null) {
-                            System.out.println("Server response: " + line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } </code></pre>
+          <pre><code id="code1">K
+week-6  RJ'S ALGORITHM
+
+
+
+import java.security.*;
+
+import javax.crypto.*;
+
+import javax.crypto.spec.*;
+
+import java.io.*;
+
+public class AES {
+
+public static String asHex (byte buf[]) {
+
+    StringBuffer strbuf = new StringBuffer(buf.length * 2); 
+
+    for (int i = 0; i < buf.length; i++) 
+
+    {
+
+        if (((int) buf[i] & 0xff) < 0x10)
+
+            strbuf.append("0");
+
+        strbuf.append(Long.toString((int) buf[i] & 0xff, 16)); 
+
+    }
+
+    return strbuf.toString(); 
+
+}
+
+public static void main(String[] args) throws Exception { 
+
+    String message="AES still rocks!!";
+
+    KeyGenerator kgen = KeyGenerator.getInstance("AES"); kgen.init(128);
+
+    SecretKey skey = kgen.generateKey();
+
+    byte[] raw = skey.getEncoded();
+
+    SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+
+    Cipher cipher = Cipher.getInstance("AES"); 
+
+    cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+
+    byte[] encrypted = cipher.doFinal((args.length == 0 ? message : args[0]).getBytes()); 
+
+    System.out.println("encrypted string: " + asHex(encrypted)); 
+
+    cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+
+    byte[] original = cipher.doFinal(encrypted);
+
+    String originalString = new String(original);
+
+    System.out.println("Original string: " + originalString + " " + asHex(original)); 
+
+} }
+
+ 
+
+RC4 LOGIC
+week-7 
+
+import javax.crypto.Cipher;
+
+import javax.crypto.KeyGenerator;
+
+import javax.crypto.SecretKey;
+
+import javax.swing.JOptionPane;
+
+import java.util.Base64;
+
+public class BlowFish{
+
+public static void main(String[] args) throws Exception {
+
+KeyGenerator keygenerator = KeyGenerator.getInstance("Blowfish");
+
+SecretKey secretkey = keygenerator.generateKey();
+
+Cipher cipher = Cipher.getInstance("Blowfish");
+
+String inputText = JOptionPane.showInputDialog("Input your message: ");
+
+cipher.init(Cipher.ENCRYPT_MODE, secretkey);
+
+byte[] encrypted = cipher.doFinal(inputText.getBytes());
+
+cipher.init(Cipher.DECRYPT_MODE, secretkey);
+
+byte[] decrypted = cipher.doFinal(encrypted);
+
+String encryptedBase64 = Base64.getEncoder().encodeToString(encrypted);
+
+JOptionPane.showMessageDialog(
+
+JOptionPane.getRootFrame(),"Encrypted text (Base64): " + encryptedBase64 +"\nDecrypted text: " + new String(decrypted));
+
+System.exit(0);
+
+}
+
+}
+
+
+RSA ALGORITHM
+week-8
+
+
+import java.io.BufferedReader;
+
+import java.io.InputStreamReader;
+
+import java.math.*;
+
+import java.util.Random;
+
+import java.util.Scanner;
+
+public class RSA 
+
+{
+
+static Scanner sc = new Scanner(System.in);
+
+public static void main(String[] args) {
+
+System.out.print("Enter a Prime number: ");
+
+BigInteger p = sc.nextBigInteger();
+
+System.out.print("Enter another prime number: "); 
+
+BigInteger q = sc.nextBigInteger();
+
+BigInteger n = p.multiply(q);
+
+BigInteger n2 = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)); 
+
+BigInteger e = generateE(n2);
+
+BigInteger d = e.modInverse(n2);
+
+System.out.println("Encryption keys are: " + e + ", " + n);
+
+System.out.println("Decryption keys are: " + d + ", " + n);
+
+}
+
+public static BigInteger generateE(BigInteger fiofn) 
+
+{
+
+int y, intGCD;
+
+BigInteger e,gcd;
+
+Random x = new Random();
+
+do 
+
+{
+
+y = x.nextInt(fiofn.intValue()-1);
+
+String z = Integer.toString(y);
+
+e = new BigInteger(z);
+
+gcd = fiofn.gcd(e);
+
+intGCD = gcd.intValue();
+
+}
+
+while(y <= 2 || intGCD != 1);
+
+return e;
+
+}}
+
+
+
+
+DIFFE- HELLMAN
+week-9 
+
+
+import java.math.BigInteger;
+
+import java.security.KeyFactory;
+
+import java.security.KeyPair;
+
+import java.security.KeyPairGenerator;
+
+import java.security.SecureRandom;
+
+import javax.crypto.spec.DHParameterSpec;
+
+import javax.crypto.spec.DHPublicKeySpec;
+
+public class DiffeHellman {
+
+public final static int pValue = 47;
+
+public final static int gValue = 71;
+
+public final static int XaValue = 9;
+
+public final static int XbValue = 14;
+
+public static void main(String[] args) throws Exception 
+
+{
+
+BigInteger p = new BigInteger(Integer.toString(pValue)); 
+
+BigInteger g = new BigInteger(Integer.toString(gValue));
+
+BigInteger Xa = new BigInteger(Integer.toString(XaValue));
+
+BigInteger Xb = new BigInteger(Integer.toString(XbValue)); 
+
+createKey();
+
+int bitLength = 512;
+
+SecureRandom rnd = new SecureRandom();
+
+p = BigInteger.probablePrime(bitLength, rnd); 
+
+g = BigInteger.probablePrime(bitLength, rnd);
+
+createSpecificKey(p, g);
+
+}
+
+public static void createKey() throws Exception 
+
+{
+
+KeyPairGenerator kpg = KeyPairGenerator.getInstance("DiffieHellman");
+
+kpg.initialize(512);
+
+KeyPair kp = kpg.generateKeyPair();
+
+KeyFactory kfactory = KeyFactory.getInstance("DiffieHellman");
+
+DHPublicKeySpec kspec = (DHPublicKeySpec) kfactory.getKeySpec(kp.getPublic(),DHPublicKeySpec.class);
+
+System.out.println("Public key is: " +kspec);
+
+}
+
+public static void createSpecificKey(BigInteger p, BigInteger g) throws Exception 
+
+{ 
+
+KeyPairGenerator kpg = KeyPairGenerator.getInstance("DiffieHellman");
+
+DHParameterSpec param = new DHParameterSpec(p, g); 
+
+kpg.initialize(param);
+
+KeyPair kp = kpg.generateKeyPair();
+
+KeyFactory kfactory = KeyFactory.getInstance("DiffieHellman");
+
+DHPublicKeySpec kspec = (DHPublicKeySpec) kfactory.getKeySpec(kp.getPublic(),DHPublicKeySpec.class);
+
+System.out.println("\nPublic key is : " +kspec);
+
+}
+
+}
+
+
+
+SHA-1 ALGORITHM
+week-10
+
+
+import java.security.*;
+
+public class SHA1 {
+
+public static void main(String[] a) {
+
+try {
+
+MessageDigest md = MessageDigest.getInstance("SHA1"); 
+
+System.out.println("Message digest object info: "); 
+
+System.out.println(" Algorithm = " +md.getAlgorithm());
+
+System.out.println(" Provider = " +md.getProvider());
+
+System.out.println(" ToString = " +md.toString());
+
+String input = "";
+
+md.update(input.getBytes());
+
+byte[] output = md.digest();
+
+System.out.println("SHA1(\""+input+"\") = " +bytesToHex(output));
+
+input = "abc";
+
+md.update(input.getBytes());
+
+output = md.digest();
+
+System.out.println("SHA1(\""+input+"\") = " +bytesToHex(output));
+
+input = "abcdefghijklmnopqrstuvwxyz";
+
+md.update(input.getBytes());
+
+output = md.digest();
+
+System.out.println("SHA1(\"" +input+"\") = " +bytesToHex(output));
+
+}
+
+catch (Exception e) 
+
+{
+
+System.out.println("Exception: " +e);
+
+}
+
+}
+
+public static String bytesToHex(byte[] b) 
+
+{
+
+char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+StringBuffer buf = new StringBuffer();
+
+for (int j=0; j<b.length; j++) 
+
+{
+
+buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
+
+buf.append(hexDigit[b[j] & 0x0f]); }
+
+return buf.toString(); }
+
+} 
+
+
+
+MD5 ALGORITHM
+
+week -11
+
+
+import java.security.*;
+
+public class MD5 
+
+{
+
+public static void main(String[] a) 
+
+{
+
+try {
+
+MessageDigest md = MessageDigest.getInstance("MD5"); 
+
+System.out.println("Message digest object info: "); 
+
+System.out.println(" Algorithm = " +md.getAlgorithm());
+
+System.out.println(" Provider = " +md.getProvider()); 
+
+System.out.println(" ToString = " +md.toString());
+
+String input = "";
+
+md.update(input.getBytes());
+
+byte[] output = md.digest();
+
+System.out.println("MD5(\""+input+"\") = " +bytesToHex(output));
+
+input = "abc";
+
+md.update(input.getBytes());
+
+output = md.digest();
+
+System.out.println("MD5(\""+input+"\") = " +bytesToHex(output));
+
+input = "abcdefghijklmnopqrstuvwxyz";
+
+md.update(input.getBytes());
+
+output = md.digest();
+
+System.out.println("MD5(\"" +input+"\") = " +bytesToHex(output)); 
+
+}
+
+catch (Exception e) {
+
+System.out.println("Exception: " +e); 
+
+}}
+
+public static String bytesToHex(byte[] b) 
+
+{
+
+char hexDigit[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+StringBuffer buf = new StringBuffer();
+
+for (int j=0; j<b.length; j++) 
+
+{
+
+buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
+
+buf.append(hexDigit[b[j] & 0x0f]); }
+
+return buf.toString(); 
+
+} 
+
+}
+ </code></pre>
           <button class="btn" onclick="copyCode('code1', this)">Copy</button>
           <span class="copy-message"></span>
         </div>
